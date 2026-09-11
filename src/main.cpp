@@ -1,20 +1,23 @@
-
 #include <Arduino.h>
-#include "hhh.h"
-// put function declarations here:
-int myFunction(int, int);
+ 
+#define LED_PIN 2
+#define PUSHBUTTON 5
 
 
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-Serial.println("woy");
-delay(1000);
-Serial.println("Hello, world!");
-
-delay(1000);
-
-
+void setup() {
+  Serial.begin(115200);
+  pinMode(LED_PIN, OUTPUT);
+  
+  pinMode(PUSHBUTTON, INPUT);
 }
+ 
+void loop() {
 
+  
+
+  if (digitalRead(PUSHBUTTON == LOW)){  
+    digitalWrite(LED_PIN, LOW);
+  } else {
+      digitalWrite(LED_PIN, HIGH);
+  }
+}
