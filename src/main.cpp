@@ -1,45 +1,31 @@
-const int potPin = 2;
-const int ledMerah = 25;
-const int ledKuning = 26;
-const int ledHijau = 27;
-const int tombol = 4;
+#include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+#define SCL_PIN 26
+#define SDA_PIN 14
+
+
+const int pwmPin = 32;
+
+const int freq = 5000;
+const int pwmChannel = 0;
+const int resolution = 8;
+      
 
 void setup() {
-  Serial.begin(115200);
-  pinMode(ledMerah, OUTPUT);
-  pinMode(ledKuning, OUTPUT);
-  pinMode(ledHijau, OUTPUT);
-  pinMode(tombol, INPUT_PULLUP);
+  ledcSetup(pwmChannel, freq, resolution);
+  ledcAttachPin(pwmPin, pwmChannel);
+  Wire.begin();
+  bme.begin(0x76); // Alamat I2C default BME280
 }
+
 
 void loop() {
-  int adcValue = analogRead(potPin);
 
-  if (digitalRead(tombol) == LOW) {
-    digitalWrite(ledMerah, LOW);
-    digitalWrite(ledKuning, LOW);
-    digitalWrite(ledHijau, LOW);
+
+    float suhu = bme.readTemperature();
+   ledcWrite(pwmChannel, suhu*100);
+    
+    delay(15);
   }
-  else {
-    if (adcValue < 1300) {
-      digitalWrite(ledMerah, HIGH);
-      digitalWrite(ledKuning, LOW);
-      digitalWrite(ledHijau, LOW);
-    }
-    else if (adcValue < 2600) {
-      digitalWrite(ledMerah, LOW);
-      digitalWrite(ledKuning, HIGH);
-      digitalWrite(ledHijau, LOW);
-    }
-    else {
-      digitalWrite(ledMerah, LOW);
-      digitalWrite(ledKuning, LOW);
-      digitalWrite(ledHijau, HIGH);
-    }
-  }
-
-  Serial.print("ADC: ");
-  Serial.println(adcValue);
-
-  delay(100);
-}
