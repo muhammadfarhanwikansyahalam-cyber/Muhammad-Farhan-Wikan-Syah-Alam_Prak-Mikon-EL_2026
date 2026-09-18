@@ -1,32 +1,48 @@
-#include <Arduino.h>
-#include <Wire.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BME280.h>
+#include <arduino.h>
 
-#define SCL_PIN 26
-#define SDA_PIN 14
-
-Adafruit_BME280 bme;
-
-const int pwmPin = 32;
-
+const int pwmPin = 16;
 const int freq = 5000;
-const int pwmChannel = 0;
+
 const int resolution = 8;
 
 void setup() {
-  ledcSetup(pwmChannel, freq, resolution);
-  ledcAttachPin(pwmPin, pwmChannel);
+  ledcSetup(0, freq, resolution);
+  
+  ledcSetup(1, freq, resolution);
+  
+  ledcSetup(2, freq, resolution);
+ 
+    ledcAttachPin(17, 0);
+  ledcAttachPin(18, 1);
+   ledcAttachPin(19, 2);
+  
 
-  Wire.begin(SDA_PIN, SCL_PIN);
-
-  bme.begin(0x76);
 }
 
 void loop() {
-  float suhu = bme.readTemperature();
+  for(int dutyCycle = 0; dutyCycle <= 255; dutyCycle++) {
+    ledcWrite(0, dutyCycle);
+    delay(15);
+  }
+ for(int dutyCycle = 255; dutyCycle >=0; dutyCycle--) {
+    ledcWrite(0, dutyCycle);
+    delay(15);
+  }
 
-  ledcWrite(pwmChannel, suhu * 10);
-
-  delay(15);
+   for(int dutyCycle = 0; dutyCycle <= 255; dutyCycle++) {
+    ledcWrite(1, dutyCycle);
+    delay(15);
+  }
+ for(int dutyCycle = 255; dutyCycle >=0; dutyCycle--) {
+    ledcWrite(1, dutyCycle);
+    delay(15);
+  }
+   for(int dutyCycle = 0; dutyCycle <= 255; dutyCycle++) {
+    ledcWrite(2, dutyCycle);
+    delay(15);
+  }
+ for(int dutyCycle = 255; dutyCycle >=0; dutyCycle--) {
+    ledcWrite(2, dutyCycle);
+    delay(15);
+  }
 }
