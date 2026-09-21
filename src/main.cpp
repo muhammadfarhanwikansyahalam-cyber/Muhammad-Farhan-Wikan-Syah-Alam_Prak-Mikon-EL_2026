@@ -1,48 +1,34 @@
-#include <arduino.h>
-
-const int pwmPin = 16;
-const int freq = 5000;
-
-const int resolution = 8;
+#include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_INA219.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+Adafruit_INA219 ina219;
+Adafruit_SSD1306 display(128, 64, &Wire, -1);
 
 void setup() {
-  ledcSetup(0, freq, resolution);
-  
-  ledcSetup(1, freq, resolution);
-  
-  ledcSetup(2, freq, resolution);
- 
-    ledcAttachPin(17, 0);
-  ledcAttachPin(18, 1);
-   ledcAttachPin(19, 2);
-  
-
+Serial.begin(115200);
+display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+ina219.begin();
+ display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
 }
 
-void loop() {
-  for(int dutyCycle = 0; dutyCycle <= 255; dutyCycle++) {
-    ledcWrite(0, dutyCycle);
-    delay(15);
-  }
- for(int dutyCycle = 255; dutyCycle >=0; dutyCycle--) {
-    ledcWrite(0, dutyCycle);
-    delay(15);
-  }
 
-   for(int dutyCycle = 0; dutyCycle <= 255; dutyCycle++) {
-    ledcWrite(1, dutyCycle);
-    delay(15);
-  }
- for(int dutyCycle = 255; dutyCycle >=0; dutyCycle--) {
-    ledcWrite(1, dutyCycle);
-    delay(15);
-  }
-   for(int dutyCycle = 0; dutyCycle <= 255; dutyCycle++) {
-    ledcWrite(2, dutyCycle);
-    delay(15);
-  }
- for(int dutyCycle = 255; dutyCycle >=0; dutyCycle--) {
-    ledcWrite(2, dutyCycle);
-    delay(15);
-  }
+
+
+void loop() {
+float arus = ina219.getCurrent_mA();
+float tegangan_V = ina219.getBusVoltage_V();
+float daya_mW = ina219.getPower_mW();
+
+display.clearDisplay();
+display.setCursor(0,10);
+  display.print (arus);
+  display.setCursor(0,20);
+display.print (tegangan_V);
+display.setCursor(0,30);
+display.print (daya_mW);
+display.display();
+delay(1000);
 }
